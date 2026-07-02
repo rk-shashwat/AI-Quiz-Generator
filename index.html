@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Quiz Generator</title>
+  <meta name="description" content="Create AI-powered multiple-choice quizzes instantly for learning, practice, and assessment." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Decorative background blobs -->
+  <div class="bg-decor" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <!-- ================= NAVBAR ================= -->
+  <header class="navbar">
+    <div class="navbar-inner">
+      <div class="logo">
+        <span class="logo-mark" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 10a3 3 0 1 1 3.5 2.96c-.7.13-1.5.66-1.5 1.54" stroke="url(#logoGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="11" cy="18.5" r="1.1" fill="url(#logoGrad)"/>
+            <defs>
+              <linearGradient id="logoGrad" x1="6" y1="6" x2="16" y2="19" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#4F46E5"/>
+                <stop offset="1" stop-color="#7C3AED"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </span>
+        <span class="logo-text">AI Quiz Generator</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ================= HERO ================= -->
+    <section class="hero">
+      <h1 class="hero-title">AI Quiz Generator</h1>
+      <p class="hero-subtitle">Create AI-powered multiple-choice quizzes instantly for learning, practice, and assessment.</p>
+    </section>
+
+    <!-- ================= GENERATOR CARD ================= -->
+    <section class="card generator-card" id="generatorCard" aria-labelledby="generator-heading">
+      <h2 id="generator-heading" class="visually-hidden">Quiz generator</h2>
+
+      <div class="text-field">
+        <label for="topicInput">Topic</label>
+        <input
+          type="text"
+          id="topicInput"
+          placeholder="Enter quiz topic..."
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="field-grid">
+        <div class="select-field">
+          <label for="difficultySelect">Difficulty</label>
+          <select id="difficultySelect">
+            <option>Easy</option>
+            <option selected>Medium</option>
+            <option>Hard</option>
+          </select>
+        </div>
+
+        <div class="select-field">
+          <label for="questionCountSelect">Number of Questions</label>
+          <select id="questionCountSelect">
+            <option>5</option>
+            <option>10</option>
+            <option>15</option>
+            <option>20</option>
+          </select>
+        </div>
+
+        <div class="select-field">
+          <label for="questionTypeSelect">Question Type</label>
+          <select id="questionTypeSelect">
+            <option>Multiple Choice</option>
+            <option>True / False</option>
+          </select>
+        </div>
+
+        <div class="select-field">
+          <label for="languageSelect">Language</label>
+          <select id="languageSelect">
+            <option>English</option>
+            <option>Hindi</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions-row">
+        <button id="generateBtn" class="btn btn-primary" type="button">
+          <span class="btn-label">Generate Quiz</span>
+          <span class="spinner" id="btnSpinner" aria-hidden="true"></span>
+        </button>
+        <button id="clearBtn" class="btn btn-ghost" type="button">Clear</button>
+      </div>
+
+      <p class="hint">Tip: Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to generate</p>
+    </section>
+
+    <!-- ================= QUIZ SECTION ================= -->
+    <section class="quiz-section" id="quizSection" hidden>
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-track">
+          <div class="quiz-progress-fill" id="progressFill"></div>
+        </div>
+        <div class="quiz-progress-label" id="progressLabel" aria-live="polite">0 of 0 answered</div>
+      </div>
+
+      <form id="quizForm">
+        <div id="questionsContainer"></div>
+
+        <div class="quiz-bottom-actions">
+          <button id="submitQuizBtn" class="btn btn-primary" type="submit">Submit Quiz</button>
+          <button id="resetQuizBtn" class="btn btn-ghost" type="button">Reset Quiz</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ================= RESULT SECTION ================= -->
+    <section class="card result-card" id="resultSection" aria-labelledby="result-heading" hidden>
+      <h2 id="result-heading" class="result-title">Your Results</h2>
+
+      <div class="score-summary">
+        <div class="score-ring" id="scoreRing">
+          <span id="scorePercentage">0%</span>
+        </div>
+        <div class="score-details">
+          <p class="performance-message" id="performanceMessage"></p>
+          <div class="stat-grid">
+            <div class="stat-box">
+              <span class="stat-value" id="statTotal">0</span>
+              <span class="stat-label">Total Questions</span>
+            </div>
+            <div class="stat-box stat-correct">
+              <span class="stat-value" id="statCorrect">0</span>
+              <span class="stat-label">Correct</span>
+            </div>
+            <div class="stat-box stat-wrong">
+              <span class="stat-value" id="statWrong">0</span>
+              <span class="stat-label">Wrong</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-value" id="statScore">0</span>
+              <span class="stat-label">Score</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="explanations-heading">Explanations</h3>
+      <div id="explanationsContainer" class="explanations-container"></div>
+
+      <div class="result-actions">
+        <button id="copyResultBtn" class="btn btn-secondary" type="button">Copy Result</button>
+        <button id="downloadTxtBtn" class="btn btn-secondary" type="button">Download TXT</button>
+        <button id="downloadPdfBtn" class="btn btn-secondary" type="button">Download PDF</button>
+        <button id="newQuizBtn" class="btn btn-secondary" type="button">Generate New Quiz</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= TOAST NOTIFICATIONS ================= -->
+  <div id="toastContainer" class="toast-container" aria-live="assertive"></div>
+
+  <footer class="footer">
+    <p>Built with vanilla JS &amp; the Groq API.</p>
+  </footer>
+
+  <!-- jsPDF for client-side PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
