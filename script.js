@@ -204,7 +204,7 @@ async function fetchQuiz(prompt) {
   }
 
   const data = await response.json();
-Console.log(data);
+console.log(data);
   return data.questions;
 }
 
