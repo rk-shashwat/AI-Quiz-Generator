@@ -189,7 +189,7 @@ function parseQuizJson(raw) {
 // CORE: Call the Groq API and return the parsed quiz array
 // ------------------------------------------------------------
 async function fetchQuiz(prompt) {
-  const response = await fetch(`${BACKEND_URL}/quiz-generator`, {
+  const response = await fetch(BACKEND_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
