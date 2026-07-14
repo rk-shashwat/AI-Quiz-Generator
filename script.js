@@ -189,23 +189,25 @@ function parseQuizJson(raw) {
 // CORE: Call the Groq API and return the parsed quiz array
 // ------------------------------------------------------------
 async function fetchQuiz(prompt) {
-  const response = await fetch(BACKEND_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      prompt: prompt
-    })
-  });
+    const response = await fetch(BACKEND_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            prompt: prompt
+        })
+    });
 
-  if (!response.ok) {
-    throw new Error("Failed to generate quiz.");
-  }
+    if (!response.ok) {
+        throw new Error("Failed to generate quiz.");
+    }
 
-  const data = await response.json();
-  console.log(data);
-  return data.questions;
+    const data = await response.json();
+
+    console.log(data);
+
+    return parseQuizJson(data.response);
 }
 
 // ------------------------------------------------------------
