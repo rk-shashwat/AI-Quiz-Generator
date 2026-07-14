@@ -11,10 +11,7 @@
 // Fine for local/personal use — for a public deployment, route
 // this request through your own backend so the key never
 // reaches the browser.
-const API_KEY = "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";
-const API_URL = "https://api.groq.com/openai/v1/chat/completions";
-const MODEL = "llama-3.3-70b-versatile";
-const REQUEST_TIMEOUT_MS = 30000;
+const API_URL = "https://ai-tool-backend-dr0k.onrender.com";
 
 // ------------------------------------------------------------
 // DOM REFERENCES
@@ -193,64 +190,23 @@ function parseQuizJson(raw) {
 // CORE: Call the Groq API and return the parsed quiz array
 // ------------------------------------------------------------
 async function fetchQuiz(prompt) {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-
-  let response;
-  try {
-    response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.6,
-        max_tokens: 2000
-      }),
-      signal: controller.signal
-    });
-  } catch (error) {
-    if (error.name === "AbortError") {
-      throw new Error("The request timed out. Please try again.");
-    }
-    throw new Error("No internet connection. Please check your network and try again.");
-  } finally {
-    clearTimeout(timeoutId);
-  }
+  const response = await fetch(`${API_URL}/quiz-generator`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      prompt: prompt
+    })
+  });
 
   if (!response.ok) {
-    if (response.status === 401) {
-      throw new Error("Invalid API key. Please check your Groq API key and try again.");
-    }
-    if (response.status === 429) {
-      throw new Error("Rate limit reached. Please wait a moment and try again.");
-    }
-    if (response.status >= 500) {
-      throw new Error("The AI server is having issues right now. Please try again shortly.");
-    }
-    throw new Error(`Something went wrong (error ${response.status}). Please try again.`);
+    throw new Error("Failed to generate quiz.");
   }
 
-  let data;
-  try {
-    data = await response.json();
-  } catch (error) {
-    throw new Error("Received an unreadable response from the server. Please try again.");
-  }
+  const data = await response.json();
 
-  const rawText = data?.choices?.[0]?.message?.content?.trim();
-  if (!rawText) {
-    throw new Error("The AI didn't return any questions. Please try again.");
-  }
-
-  try {
-    return parseQuizJson(rawText);
-  } catch (error) {
-    throw new Error("The AI returned an invalid response. Please try again.");
-  }
+  return data.questions;
 }
 
 // ------------------------------------------------------------
