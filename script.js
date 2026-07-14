@@ -11,8 +11,7 @@
 // Fine for local/personal use — for a public deployment, route
 // this request through your own backend so the key never
 // reaches the browser.
-const API_URL = "https://ai-tool-backend-dr0k.onrender.com/chat";
-
+const BACKEND_URL = "https://ai-tool-backend-dr0k.onrender.com/chat";
 // ------------------------------------------------------------
 // DOM REFERENCES
 // ------------------------------------------------------------
